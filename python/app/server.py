@@ -9,6 +9,8 @@ import json
 import sys
 import os
 
+from app.service.docker_service import DockerService
+
 
 args = sys.argv
 env = os.getenv("APP_ENV", "local")
@@ -25,12 +27,15 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 ns = api.namespace('api')
 pns = api.namespace('')
 
+docker_service = DockerService()
+
 
 @ns.route('/containers/push')
 class ContainersPush(Resource):
 
     @staticmethod
     def post():
+        docker_service.push("nginx")
         result = {}
         return jsonify(result)
 
@@ -40,6 +45,7 @@ class ContainersPull(Resource):
 
     @staticmethod
     def post():
+        docker_service.pull("nginx")
         result = {}
         return jsonify(result)
 
