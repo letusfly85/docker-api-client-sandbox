@@ -10,6 +10,7 @@ import sys
 import os
 
 from app.service.docker_service import DockerService
+from app.actor.docker_event_actor import DockerEventActor
 
 
 args = sys.argv
@@ -28,6 +29,8 @@ ns = api.namespace('api')
 pns = api.namespace('')
 
 docker_service = DockerService()
+actor = DockerEventActor.start()
+actor.tell({"show_image": True})
 
 
 @ns.route('/containers/push')
@@ -35,7 +38,7 @@ class ContainersPush(Resource):
 
     @staticmethod
     def post():
-        docker_service.push("nginx")
+        docker_service.push("nginx:latest")
         result = {}
         return jsonify(result)
 
@@ -45,7 +48,7 @@ class ContainersPull(Resource):
 
     @staticmethod
     def post():
-        docker_service.pull("nginx")
+        docker_service.pull("nginx:latest")
         result = {}
         return jsonify(result)
 
